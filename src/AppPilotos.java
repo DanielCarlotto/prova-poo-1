@@ -8,12 +8,13 @@ import Aplicativos.Piloto;
 
 public class AppPilotos {
     private static int qtdCadastrados = 0;
-    private static int MAX_ELEMENTOS = 20;
+    private static int MAX_ELEMENTOS = 2;
+    private static int MAX_ELEMENTOS_SOLICITADOS = 0;
     private static Piloto[] _pilotos = new Piloto[MAX_ELEMENTOS];
     private static Scanner in = new Scanner(System.in);
     private static String localizarCpf = "0";
 
-    private static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
     
         boolean continuarExecutando = true;
         do {
@@ -43,10 +44,10 @@ public class AppPilotos {
             localizarPilotoCPF();
             break;
         }
-        /*case 4: {
-            aumentarEspaçoArmazenamento();
+        case 4: {
+            aumentarArmazenamento();
             break;
-        } */   
+        }    
         case 0: {
             System.out.println("Saindo do sistema.");
             return false;
@@ -69,7 +70,23 @@ public class AppPilotos {
             System.out.print("Opção: ");
         }
 
+    private static void aumentarArmazenamento() {
+        System.out.println("Informe quantos pilotos deseja cadastrar: ");
+        MAX_ELEMENTOS_SOLICITADOS = in.nextInt();
+        if (MAX_ELEMENTOS_SOLICITADOS <= MAX_ELEMENTOS) {
+            System.out.println("Espaço solicitaddo é inferior ao espeaço atual disponivel!");
+        }
+        else {
+            MAX_ELEMENTOS = MAX_ELEMENTOS_SOLICITADOS;
+            System.out.println("Capacidade aumentada com sucesso!");
+        }
+    }
+
      private static void cadastrarPiloto() throws Exception {
+        if (qtdCadastrados == _pilotos.length) {
+            System.out.println("Não há armazenamento disponivel!");
+        } 
+        else {
         System.out.println("Cadastro de Pilotos");
         System.out.println("Nome: ");
         String nome = in.nextLine();
@@ -78,8 +95,9 @@ public class AppPilotos {
     
         Piloto pilotos = new Piloto(nome, cpf);
         adicionarPilotoLista(pilotos);
+        System.out.println("Piloto cadastrado com sucesso!");
         }
-
+        }
     private static void listarPilotos() {
         System.out.println("Lista de pilotos cadastrados:");
         for (int i = 0; i < qtdCadastrados; i++){
@@ -87,32 +105,29 @@ public class AppPilotos {
            }
          }
     private static void adicionarPilotoLista(Piloto pilotos) {
-        if (qtdCadastrados == _pilotos.length) {
-            Piloto[] novaLista = new Piloto[_pilotos.length];
-
-        for (int i = 0; i < _pilotos.length; i++) {
-            novaLista[i] = _pilotos[i];
-             }
-             _pilotos = novaLista;
-         }
-         }
+        _pilotos[qtdCadastrados] = pilotos;
+        qtdCadastrados++;
+         
+        }
 
     private static Piloto localizarPilotoCPF() throws Exception {
         System.out.println("Digite o CPF que seseja localizar: ");
-        String localizarCpf = in.nextLine();
+        localizarCpf = in.nextLine();
         for (Piloto pilotos: _pilotos) {
             if (pilotos != null && pilotos.get_cpf().equals(localizarCpf)) {
-                return pilotos;
+                System.out.println(pilotos);
+                return (pilotos);
                 }
             }
         return null;
+        
         }
 
     private static boolean validarOpcaoMenu(int opcao) {
-        return (opcao >= 0 && opcao < 5);
+        return (opcao >= 0 && opcao <= 4);
     }
 
-    private static int lerOpcao() {
+    private static int lerOpcao() throws Exception {
         int opcao = 0;
         do{
             System.out.println("Selecione a opção desejada: ");
